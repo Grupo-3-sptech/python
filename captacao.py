@@ -14,7 +14,7 @@ def mysql_connection(host, user, passwd, database=None):
     )
     return connection
 
-connection = mysql_connection('localhost', 'pedro', 'pedro0610', 'MedConnect')
+connection = mysql_connection('localhost', 'root', 'enzo123', 'MedConnect')
 
 while True:
     memoria = psutil.virtual_memory()[2]
@@ -58,7 +58,7 @@ while True:
         componente = componentes[i]
 
     
-        query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, 1, %s, %s)"
+        query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, $roboId %s, %s)"
 
     
         cursor.execute(query, (dado, componente,horarioFormatado))
