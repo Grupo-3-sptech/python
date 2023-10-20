@@ -14,12 +14,12 @@ def mysql_connection(host, user, passwd, database=None):
     )
     return connection
 
-connection = mysql_connection('localhost', 'root', 'enzo123', 'MedConnect')
+connection = mysql_connection('localhost', 'root', '5505', 'MedConnect')
 
 while True:
-    memoria = psutil.virtual_memory()[2]
-    cpu = psutil.cpu_percent(None)
-    disco = psutil.disk_usage('/')[3]
+    memoriaPorcentagem = psutil.virtual_memory()[2]
+    cpuPorcentagem = psutil.cpu_percent(None)
+    discoPorcentagem = psutil.disk_usage('/')[3]
     interval = 1
     statusRede = 0
     network_connections = psutil.net_connections()
@@ -47,7 +47,7 @@ while True:
     horarioAtual = datetime.now()
     horarioFormatado = horarioAtual.strftime('%Y-%m-%d %H:%M:%S')
     
-    ins = [cpu, memoria, disco, statusRede]
+    ins = [cpuPorcentagem, memoriaPorcentagem, discoPorcentagem, statusRede]
     componentes = [1,2,3,4]
     cursor = connection.cursor()
     
@@ -58,7 +58,7 @@ while True:
         componente = componentes[i]
 
     
-        query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, $roboId %s, %s)"
+        query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, 1, %s, %s)"
 
     
         cursor.execute(query, (dado, componente,horarioFormatado))
@@ -66,13 +66,13 @@ while True:
 
         connection.commit()
     print("\nINFORMAÇÕES SOBRE PROCESSAMENTO: ")
-    print('Porcentagem utilizada do Processador: ',cpu,'\nPorcentagem utilizada de memoria: ', memoria,'\nPorcentagem do disco sendo utilizada:', disco,'\nStatus da rede: ',statusRede)
+    print('Porcentagem utilizada do Processador: ',cpuPorcentagem,'\nPorcentagem utilizada de memoria: ', memoriaPorcentagem,'\nPorcentagem do disco sendo utilizada:', discoPorcentagem,'\nStatus da rede: ',statusRede)
    
     
        
 
 
-    time.sleep(10)
+    time.sleep(2)
 
 cursor.close()
 connection.close()
