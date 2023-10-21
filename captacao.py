@@ -17,7 +17,10 @@ def mysql_connection(host, user, passwd, database=None):
 def bytes_para_gb(bytes_value):
     return bytes_value / (1024 ** 3)
 
-connection = mysql_connection('localhost', 'root', '5505', 'MedConnect')
+def milissegundos_para_segundos(ms_value):
+    return ms_value / 1000
+
+connection = mysql_connection('localhost', 'admin', 'admin', 'MedConnect')
 
 while True:
 
@@ -37,13 +40,17 @@ while True:
 
     #Disco
     discoPorcentagem = psutil.disk_usage('/')[3]
+    discoTempoLeitura = milissegundos_para_segundos(psutil.disk_io_counters(perdisk=False, nowrap=True)[4])
+    discoTempoEscrita = milissegundos_para_segundos(psutil.disk_io_counters(perdisk=False, nowrap=True)[5])
+    
 
     #Rede
     interval = 1
     statusRede = 0
     network_connections = psutil.net_connections()
-
     network_active = any(conn.status == psutil.CONN_ESTABLISHED for conn in network_connections)
+    bytes_enviados = psutil.net_io_counters()[0]
+    bytes_recebidos = psutil.net_io_counters()[1]
 
     #Outros
     boot_time = datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
@@ -70,8 +77,8 @@ while True:
     horarioAtual = datetime.now()
     horarioFormatado = horarioAtual.strftime('%Y-%m-%d %H:%M:%S')
     
-    ins = [cpuPorcentagem, cpuVelocidadeEmGhz, tempoSistema, processos, memoriaPorcentagem, memoriaTotal, memoriaUsada, memoriaSwapPorcentagem, discoPorcentagem, statusRede]
-    componentes = [1,2,3,4,5,6,7,8,9,10]
+    ins = [cpuPorcentagem, cpuVelocidadeEmGhz, tempoSistema, processos, memoriaPorcentagem, memoriaTotal, memoriaUsada, memoriaSwapPorcentagem, discoPorcentagem, statusRede, discoTempoLeitura, discoTempoEscrita, bytes_enviados, bytes_recebidos]
+    componentes = [1,2,3,4,5,6,7,8,9,10, 11, 12, 13, 14]
     
     cursor = connection.cursor()
     """
@@ -95,7 +102,10 @@ while True:
           '\nVelocidade da CPU: ',cpuVelocidadeEmGhz,
           '\nPorcentagem utilizada de memoria: ', memoriaPorcentagem,
           '\nPorcentagem do disco sendo utilizada:', discoPorcentagem,
-          '\nStatus da rede: ',statusRede)
+          '\nTempo de leitura do disco em segundos:', discoTempoLeitura,
+          '\nTempo de escrita do disco em segundos:', discoTempoEscrita,
+          '\nRede - Bytes enviados:', bytes_enviados,
+          '\nRede - Bytes recebidos: ', bytes_recebidos)
    
     
        
