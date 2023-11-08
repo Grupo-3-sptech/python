@@ -1,3 +1,4 @@
+
 from mysql.connector import connect
 import psutil
 import platform
@@ -65,15 +66,12 @@ for i in range(len(ins)):
     dado = ins[i]
         
     componente = componentes[i]
-
     
-    query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, 1, %s, %s)"
-
+    query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, %s, %s, %s)"
     
-    cursor.execute(query, (dado, componente,horarioFormatado))
+    cursor.execute(query, (dado, idRobo, componente, horarioFormatado))
 
 
-    connection.commit()
 
 print("\nDisco porcentagem:", discoPorcentagem,
           "\nDisco total:", discoTotal,
@@ -186,19 +184,14 @@ while True:
     cursor = connection.cursor()
     
     for i in range(len(ins)):
-        
         dado = ins[i]
-        
         componente = componentes[i]
 
-    
-        query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, 1, %s, %s)"
+        query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, %s, %s, %s)"
 
-    
-        cursor.execute(query, (dado, componente,horarioFormatado))
-
-
+        cursor.execute(query, (dado, idRobo, componente, horarioFormatado))
         connection.commit()
+
        
     print("\nINFORMAÇÕES SOBRE PROCESSAMENTO: ")
     print('\nPorcentagem utilizada da CPU: ',cpuPorcentagem,
