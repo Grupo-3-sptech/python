@@ -5,6 +5,14 @@ import time
 import mysql.connector
 from datetime import datetime
 import ping3
+import json
+import requests
+
+alerta = {"text": "alerta"}
+
+webhook = "https://hooks.slack.com/services/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"
+requests.post(webhook, data=json.dumps(alerta))
+
 
 def mysql_connection(host, user, passwd, database=None):
     connection = connect(
@@ -21,7 +29,7 @@ def bytes_para_gb(bytes_value):
 def milissegundos_para_segundos(ms_value):
     return ms_value / 1000
 
-connection = mysql_connection('localhost', 'root', '', 'MedConnect')
+connection = mysql_connection('localhost', 'medconnect', 'medconnect123', 'medconnect')
 
 #Disco
 
