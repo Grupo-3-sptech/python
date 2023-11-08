@@ -8,10 +8,17 @@ import ping3
 import json
 import requests
 
-alerta = {"text": "alerta"}
+#alerta = {"text": "alerta"}
 
-webhook = "https://hooks.slack.com/services/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"
-requests.post(webhook, data=json.dumps(alerta))
+webhook = "https://hooks.slack.com/services/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"
+#requests.post(webhook, data=json.dumps(alerta))
+
+
+idRobo = 1
+
+#descomente abaixo quando for ora criar esse arquivo peo kotlin
+# idRobo = #${roboId}
+
 
 
 def mysql_connection(host, user, passwd, database=None):
@@ -82,6 +89,18 @@ while True:
     cpuVelocidadeEmGhz = "{:.2f}".format(frequenciaCpuMhz.current / 1000)
     tempoSistema = psutil.cpu_times()[1] 
     processos = len(psutil.pids())
+    if(cpuPorcentagem > 60 and cpuPorcentagem > 70):
+        alerta = {"text": f"alerta na cpu da maquina: {idRobo} está em estado de alerta"}
+        requests.post(webhook, data=json.dumps(alerta))
+    if(cpuPorcentagem > 70 and cpuPorcentagem > 80):
+        alerta = {"text": f"alerta na cpu da maquina: {idRobo} está em estado critico"}
+        requests.post(webhook, data=json.dumps(alerta))
+    if(cpuPorcentagem > 80):
+        alerta = {"text": f"alerta na cpu da maquina: {idRobo} está em estado de urgencia"}
+        requests.post(webhook, data=json.dumps(alerta))
+        
+
+
 
     
     #Memoria
@@ -90,6 +109,15 @@ while True:
     memoriaUsada = "{:.2f}".format(bytes_para_gb(psutil.virtual_memory().used))
     memoriaSwapPorcentagem = psutil.swap_memory().percent
     memoriaSwapUso = "{:.2f}".format(bytes_para_gb(psutil.swap_memory().used))
+    if(memoriaPorcentagem > 60 and memoriaPorcentagem > 70):
+        alerta = {"text": f"⚠️  Alerta na ram da maquina: {idRobo} está em estado de alerta"}
+        requests.post(webhook, data=json.dumps(alerta))
+    if(memoriaPorcentagem > 70 and memoriaPorcentagem > 80):
+        alerta = {"text": f"⚠️  Alerta na ram da maquina: {idRobo} está em estado critico"}
+        requests.post(webhook, data=json.dumps(alerta))  
+    if(memoriaPorcentagem > 80):
+        alerta = {"text": f" ⚠️  Alerta na ram da maquina: {idRobo} está em estado de urgencia"}
+        requests.post(webhook, data=json.dumps(alerta))
     
     """
     Por enquanto não será usado
@@ -119,6 +147,15 @@ while True:
     
     destino = "google.com"  
     latencia = ping3.ping(destino) * 1000
+    if(latencia > 40 and latencia > 60):
+        alerta = {"text": f"⚠️Alerta no ping da maquina: {idRobo} está em estado de alerta"}
+        requests.post(webhook, data=json.dumps(alerta))
+    if(latencia > 60 and latencia > 80):
+        alerta = {"text": f"⚠️Alerta no ping da maquina: {idRobo} está em estado critico"}
+        requests.post(webhook, data=json.dumps(alerta))
+    if(latencia > 80):
+        alerta = {"text": f"⚠️Alerta no ping da maquina: {idRobo} está em estado de urgencia"}
+        requests.post(webhook, data=json.dumps(alerta))
     
     if latencia is not None:
         print(f"Latência para {destino}: {latencia:.2f} ms")
