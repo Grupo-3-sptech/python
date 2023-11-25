@@ -8,6 +8,8 @@ from datetime import datetime
 import ping3
 import json
 import requests
+import pymssql
+
 
 #alerta = {"text": "alerta"}
 
@@ -18,7 +20,7 @@ webhook = "https://hooks.slack.com/services/T064DPFM0Q7/B064EML77V5/zCl4xBWYXgsb
 idRobo = 1
 
 #descomente abaixo quando for ora criar esse arquivo peo kotlin
-# idRobo = #${roboId}
+# idRobo = #{roboId}
 
 
 
@@ -31,13 +33,19 @@ def mysql_connection(host, user, passwd, database=None):
     )
     return connection
 
+
 def bytes_para_gb(bytes_value):
     return bytes_value / (1024 ** 3)
 
 def milissegundos_para_segundos(ms_value):
     return ms_value / 1000
 
-connection = mysql_connection('localhost', 'root', '5505', 'medconnect')
+connection = mysql_connection('localhost', 'medconnect', 'medconnect123', 'medconnect')
+
+
+
+sqlserver_connection = pymssql.connect(server='52.7.105.138', database='medconnect', user='sa', password='medconnect123');
+
 
 #Disco
 
@@ -61,6 +69,9 @@ horarioAtual = datetime.now()
 horarioFormatado = horarioAtual.strftime('%Y-%m-%d %H:%M:%S')
 
 cursor = connection.cursor()
+server_cursor = sqlserver_connection.cursor()
+    
+
 for i in range(len(ins)):
         
     dado = ins[i]
@@ -68,9 +79,12 @@ for i in range(len(ins)):
     componente = componentes[i]
     
     query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, %s, %s, %s)"
+
+    
+    querys = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (@Dado, @FKRoboRegistro, @FKComponente, @HorarioDado)"
     
     cursor.execute(query, (dado, idRobo, componente, horarioFormatado))
-
+    server_cursor.execute(query, (dado, idRobo, componente, horarioFormatado))
 
 
 print("\nDisco porcentagem:", discoPorcentagem,
@@ -182,6 +196,7 @@ while True:
     componentes = [1,2,3,4,8,9,10,11,12,18,19,20,21]
     
     cursor = connection.cursor()
+    server_cursor = sqlserver_connection.cursor()
     
     for i in range(len(ins)):
         dado = ins[i]
@@ -189,8 +204,15 @@ while True:
 
         query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, %s, %s, %s)"
 
+        querys = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (@Dado, @FKRoboRegistro, @FKComponente, @HorarioDado)"
+
         cursor.execute(query, (dado, idRobo, componente, horarioFormatado))
+        server_cursor.execute(query, (dado, idRobo, componente, horarioFormatado))
+
+
+        
         connection.commit()
+        sqlserver_connection.commit()
 
        
     print("\nINFORMAÇÕES SOBRE PROCESSAMENTO: ")
@@ -212,5 +234,7 @@ while True:
     time.sleep(5)
 
 cursor.close()
+server_cursor.close()
 connection.close()
+sqlserver_connection.close()
     
