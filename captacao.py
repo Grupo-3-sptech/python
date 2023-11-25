@@ -20,7 +20,7 @@ webhook = "https://hooks.slack.com/services/T064DPFM0Q7/B064EML77V5/zCl4xBWYXgsb
 idRobo = 1
 
 #descomente abaixo quando for ora criar esse arquivo peo kotlin
-# idRobo = #{roboId}
+# idRobo = ${roboId}
 
 
 
