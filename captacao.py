@@ -37,7 +37,7 @@ def bytes_para_gb(bytes_value):
 def milissegundos_para_segundos(ms_value):
     return ms_value / 1000
 
-connection = mysql_connection('localhost', 'medconnect', 'medconnect123', 'medconnect')
+connection = mysql_connection('localhost', 'root', '5505', 'medconnect')
 
 #Disco
 
@@ -55,7 +55,7 @@ discoTempoLeitura = milissegundos_para_segundos(psutil.disk_io_counters(perdisk=
 discoTempoEscrita = milissegundos_para_segundos(psutil.disk_io_counters(perdisk=False, nowrap=True)[5])
 
 ins = [discoPorcentagem, discoTotal, discoUsado, discoTempoLeitura, discoTempoEscrita]
-componentes = [10,11,12,13,14]
+componentes = [13,14,15,16,17]
 
 horarioAtual = datetime.now()
 horarioFormatado = horarioAtual.strftime('%Y-%m-%d %H:%M:%S')
@@ -179,7 +179,7 @@ while True:
     ins = [cpuPorcentagem, cpuVelocidadeEmGhz, tempoSistema, processos, memoriaPorcentagem,
            memoriaTotal, memoriaUsada, memoriaSwapPorcentagem, memoriaSwapUso, statusRede, latencia,
            bytes_enviados, bytes_recebidos]
-    componentes = [1,2,3,4,5,6,7,8,9,15,16,17,18]
+    componentes = [1,2,3,4,8,9,10,11,12,18,19,20,21]
     
     cursor = connection.cursor()
     
