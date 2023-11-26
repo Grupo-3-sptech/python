@@ -72,10 +72,16 @@ horarioFormatado = horarioAtual.strftime('%Y-%m-%d %H:%M:%S')
 cursor = connection.cursor()
 server_cursor = sqlserver_connection.cursor()
 
-
-querys = "INSERT INTO RoboCirurgiao (idRobo, modelo, fabricacao, fkStatus, idProcess, fkHospital) VALUES (22, 'Modelo A', 'contenção', 1, 'a', 1)"
+queryExis = "SELECT COUNT(*) AS count FROM RoboCirurgiao WHERE idRobo = 22"
     
-cursor.execute(querys)
+cursor.execute(queryExis)
+
+result = cursor.fetchone()
+if result[0] == 0:
+    querys = "INSERT INTO RoboCirurgiao (idRobo, modelo, fabricacao, fkStatus, idProcess, fkHospital) VALUES (22, 'Modelo A', 'contenção', 1, 'a', 1)"
+    cursor.execute(querys)
+    connection.commit()
+
 
 
 for i in range(len(ins)):
@@ -87,7 +93,6 @@ for i in range(len(ins)):
     query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, %s, %s, %s)"
 
     
-    connection.commit()
     
     #banco de contenção
     cursor.execute(query, (dado, 22, componente, horarioFormatado))
