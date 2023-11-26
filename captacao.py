@@ -18,9 +18,8 @@ webhook = "https://hooks.slack.com/services/T064DPFM0Q7/B064EML77V5/zCl4xBWYXgsb
 
 
 idRobo = 1
-
-#descomente abaixo quando for ora criar esse arquivo peo kotlin
-# idRobo = ${roboId}
+#descomente abaixo quando for ora criar esse arquivo pelo kotlin
+#idRobo = ${idRobo}
 
 
 
@@ -39,6 +38,7 @@ def bytes_para_gb(bytes_value):
 
 def milissegundos_para_segundos(ms_value):
     return ms_value / 1000
+
 
 connection = mysql_connection('localhost', 'medconnect', 'medconnect123', 'medconnect')
 
@@ -68,9 +68,15 @@ componentes = [10,11,12,13,14]
 horarioAtual = datetime.now()
 horarioFormatado = horarioAtual.strftime('%Y-%m-%d %H:%M:%S')
 
+#banco de contenção
 cursor = connection.cursor()
 server_cursor = sqlserver_connection.cursor()
+
+
+querys = "INSERT INTO RoboCirurgiao (idRobo, modelo, fabricacao, fkStatus, idProcess, fkHospital) VALUES (22, 'Modelo A', 'contenção', 1, 'a', 1)"
     
+cursor.execute(querys)
+
 
 for i in range(len(ins)):
         
@@ -81,9 +87,10 @@ for i in range(len(ins)):
     query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, %s, %s, %s)"
 
     
-    querys = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (@Dado, @FKRoboRegistro, @FKComponente, @HorarioDado)"
+    connection.commit()
     
-    cursor.execute(query, (dado, idRobo, componente, horarioFormatado))
+    #banco de contenção
+    cursor.execute(query, (dado, 22, componente, horarioFormatado))
     server_cursor.execute(query, (dado, idRobo, componente, horarioFormatado))
 
 
@@ -204,9 +211,9 @@ while True:
 
         query = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (%s, %s, %s, %s)"
 
-        querys = "INSERT INTO Registros (dado, fkRoboRegistro, fkComponente, HorarioDado) VALUES (@Dado, @FKRoboRegistro, @FKComponente, @HorarioDado)"
 
-        cursor.execute(query, (dado, idRobo, componente, horarioFormatado))
+        #banco de contenção abaixo
+        cursor.execute(query, (dado, 22, componente, horarioFormatado))
         server_cursor.execute(query, (dado, idRobo, componente, horarioFormatado))
 
 
